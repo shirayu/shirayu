@@ -1,0 +1,10 @@
+{
+    "MD007": {
+        "indent": 4
+    },
+    "commands-show-output": false,
+    "line-length": false,
+    "no-hard-tabs": false,
+    "MD041": false,
+    "no-inline-html": false
+}
