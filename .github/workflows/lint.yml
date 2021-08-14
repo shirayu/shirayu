@@ -1,0 +1,32 @@
+---
+# yamllint disable rule:line-length
+name: lint
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/yarn
+          key: ${{ env.cache-version }}-${{ runner.os }}-cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ env.cache-version }}-${{ runner.os }}-cache-
+
+      - name: Install node_modules
+        run: yarn install
+
+      - name: Run markdownlint
+        run: yarn check:lint:md
