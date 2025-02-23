@@ -1,32 +1,41 @@
 ---
-# yamllint disable rule:line-length
-name: lint
-
+name: CI
 on:  # yamllint disable-line rule:truthy
   push:
-    branches: [master]
   pull_request:
-    branches: [master]
-
-  workflow_dispatch:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Cache node_modules
-        uses: actions/cache@v1
+      - uses: actions/setup-node@v4
         with:
-          path: ~/.cache/yarn
-          key: ${{ env.cache-version }}-${{ runner.os }}-cache-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ env.cache-version }}-${{ runner.os }}-cache-
+          node-version: '22'
 
-      - name: Install node_modules
-        run: yarn install
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> "${GITHUB_ENV}"
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Run markdownlint
-        run: yarn check:lint:md
+        run: pnpm run lint:md
