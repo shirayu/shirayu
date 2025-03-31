@@ -10,6 +10,6 @@
   "license": "",
   "packageManager": "pnpm@10.5.2",
   "scripts": {
-    "lint:md": "find . -type f  -name node_modules -prune -name '*.md' -exec npx markdownlint --config .markdownlintrc.json {} \\;"
+    "lint:md": "find . -type f  -name node_modules -prune -name '*.md' -exec markdownlint --config .markdownlintrc.json {} \\;"
   }
 }
