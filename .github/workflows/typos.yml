@@ -17,5 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: typos-action
-        uses: crate-ci/typos@v1.29.9
+      - uses: jdx/mise-action@v2
+
+      - name: Run typos
+        run: typos
